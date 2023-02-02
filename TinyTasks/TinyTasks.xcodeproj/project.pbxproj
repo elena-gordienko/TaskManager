@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC8FA523298C4F4A001795AB /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8FA522298C4F4A001795AB /* TaskView.swift */; };
+		DC8FA525298C55E6001795AB /* TaskModelStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8FA524298C55E6001795AB /* TaskModelStorage.swift */; };
 		DCACCB25297C2E1100DBA171 /* TinyTasksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCACCB24297C2E1100DBA171 /* TinyTasksApp.swift */; };
 		DCACCB27297C2E1100DBA171 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCACCB26297C2E1100DBA171 /* Persistence.swift */; };
 		DCACCB2A297C2E1100DBA171 /* TinyTasks.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCACCB28297C2E1100DBA171 /* TinyTasks.xcdatamodeld */; };
@@ -36,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DC8FA522298C4F4A001795AB /* TaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskView.swift; sourceTree = "<group>"; };
+		DC8FA524298C55E6001795AB /* TaskModelStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModelStorage.swift; sourceTree = "<group>"; };
 		DCACCB21297C2E1100DBA171 /* TinyTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinyTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCACCB24297C2E1100DBA171 /* TinyTasksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinyTasksApp.swift; sourceTree = "<group>"; };
 		DCACCB26297C2E1100DBA171 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -99,6 +103,8 @@
 		DCACCB23297C2E1100DBA171 /* TinyTasks */ = {
 			isa = PBXGroup;
 			children = (
+				DCFA4815298C4002005F7D50 /* Model */,
+				DCFA481A298C444A005F7D50 /* View */,
 				DCACCB24297C2E1100DBA171 /* TinyTasksApp.swift */,
 				DCACCB26297C2E1100DBA171 /* Persistence.swift */,
 				DCACCB2B297C2E1100DBA171 /* ContentView.swift */,
@@ -133,6 +139,22 @@
 				DCACCB47297C2E1300DBA171 /* TinyTasksUITestsLaunchTests.swift */,
 			);
 			path = TinyTasksUITests;
+			sourceTree = "<group>";
+		};
+		DCFA4815298C4002005F7D50 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DC8FA524298C55E6001795AB /* TaskModelStorage.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		DCFA481A298C444A005F7D50 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DC8FA522298C4F4A001795AB /* TaskView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -266,8 +288,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCACCB25297C2E1100DBA171 /* TinyTasksApp.swift in Sources */,
+				DC8FA525298C55E6001795AB /* TaskModelStorage.swift in Sources */,
 				DCACCB27297C2E1100DBA171 /* Persistence.swift in Sources */,
 				DCACCB2C297C2E1100DBA171 /* ContentView.swift in Sources */,
+				DC8FA523298C4F4A001795AB /* TaskView.swift in Sources */,
 				DCACCB2A297C2E1100DBA171 /* TinyTasks.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
