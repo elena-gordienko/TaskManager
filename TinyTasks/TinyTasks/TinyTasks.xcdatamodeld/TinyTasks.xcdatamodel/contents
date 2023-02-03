@@ -3,5 +3,11 @@
     <entity name="Task" representedClassName="TaskModel" syncable="YES" codeGenerationType="class">
         <attribute name="isDone" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TaskList" inverseName="children" inverseEntity="TaskList"/>
+    </entity>
+    <entity name="TaskList" representedClassName="TaskListModel" syncable="YES" codeGenerationType="class">
+        <attribute name="lastChanged" attributeType="Date" defaultDateTimeInterval="695939880" usesScalarValueType="NO"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Task" inverseName="list" inverseEntity="Task"/>
     </entity>
 </model>

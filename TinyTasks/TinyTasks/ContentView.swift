@@ -11,17 +11,24 @@ import CoreData
 struct ContentView: View {
     @EnvironmentObject var taskModelStorage: TaskModelStorage
     
-    @FetchRequest(sortDescriptors: [], animation: .default)
-    private var tasks: FetchedResults<TaskModel>
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(key: "lastChanged", ascending: false)],
+        animation: .default
+    )
+    private var taskLists: FetchedResults<TaskListModel>
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
-                ForEach(tasks) { task in
-                    TaskView(task)
+                ForEach(taskLists) { taskList in
+                    NavigationLink(taskList.wrappedTitle, value: taskList)
                 }
-                .onDelete(perform: deleteTasks)
+                .onDelete(perform: deleteTaskLists)
             }
+            .navigationDestination(for: TaskListModel.self) { taskList in
+                TaskListView(taskList)
+            }
+            .navigationTitle("Task Lists")
             .toolbar {
 #if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -29,23 +36,23 @@ struct ContentView: View {
                 }
 #endif
                 ToolbarItem {
-                    Button(action: addTask) {
-                        Label("Add Task", systemImage: "plus")
+                    Button(action: addTaskList) {
+                        Label("Add Task List", systemImage: "plus")
                     }
                 }
             }
         }
     }
     
-    private func addTask() {
+    private func addTaskList() {
         withAnimation {
-            taskModelStorage.addTask()
+            taskModelStorage.addTaskList()
         }
     }
 
-    private func deleteTasks(offsets: IndexSet) {
+    private func deleteTaskLists(offsets: IndexSet) {
         withAnimation {
-            taskModelStorage.deleteTasks(offsets.map { tasks[$0] })
+            taskModelStorage.deleteTaskLists(offsets.map { taskLists[$0] })
         }
     }
 }

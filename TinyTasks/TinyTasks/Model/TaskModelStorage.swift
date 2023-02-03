@@ -20,6 +20,10 @@ final class TaskModelStorage: ObservableObject {
         viewContext.map { TaskModel(context: $0) }
     }
     
+    private func createTaskList() -> TaskListModel? {
+        viewContext.map { TaskListModel(context: $0) }
+    }
+    
     private func delete(_ object: NSManagedObject) {
         viewContext?.delete(object)
     }
@@ -35,16 +39,30 @@ final class TaskModelStorage: ObservableObject {
         }
     }
     
-    func addTask() {
+    func addTask(for list: TaskListModel) {
         // FIXME: add error handling
         guard let newTask = createTask() else { return }
         newTask.text = ""
         newTask.isDone = false
+        newTask.list = list
+        saveContext()
+    }
+    
+    func addTaskList() {
+        // FIXME: add error handling
+        guard let newTask = createTaskList() else { return }
+        newTask.title = "New list"
+        newTask.lastChanged = Date()
         saveContext()
     }
     
     func deleteTasks(_ tasks: [TaskModel]) {
         tasks.forEach(delete)
+        saveContext()
+    }
+    
+    func deleteTaskLists(_ taskLists: [TaskListModel]) {
+        taskLists.forEach(delete)
         saveContext()
     }
 }

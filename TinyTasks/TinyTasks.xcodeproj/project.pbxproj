@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC04F3CD298DB194004E9E70 /* TaskListModel+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC04F3CC298DB194004E9E70 /* TaskListModel+Utils.swift */; };
 		DC8FA523298C4F4A001795AB /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8FA522298C4F4A001795AB /* TaskView.swift */; };
 		DC8FA525298C55E6001795AB /* TaskModelStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8FA524298C55E6001795AB /* TaskModelStorage.swift */; };
+		DC8FA527298DA6C1001795AB /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8FA526298DA6C1001795AB /* TaskListView.swift */; };
 		DCACCB25297C2E1100DBA171 /* TinyTasksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCACCB24297C2E1100DBA171 /* TinyTasksApp.swift */; };
 		DCACCB27297C2E1100DBA171 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCACCB26297C2E1100DBA171 /* Persistence.swift */; };
 		DCACCB2A297C2E1100DBA171 /* TinyTasks.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCACCB28297C2E1100DBA171 /* TinyTasks.xcdatamodeld */; };
@@ -38,8 +40,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DC04F3CC298DB194004E9E70 /* TaskListModel+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskListModel+Utils.swift"; sourceTree = "<group>"; };
 		DC8FA522298C4F4A001795AB /* TaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskView.swift; sourceTree = "<group>"; };
 		DC8FA524298C55E6001795AB /* TaskModelStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModelStorage.swift; sourceTree = "<group>"; };
+		DC8FA526298DA6C1001795AB /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
 		DCACCB21297C2E1100DBA171 /* TinyTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinyTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCACCB24297C2E1100DBA171 /* TinyTasksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinyTasksApp.swift; sourceTree = "<group>"; };
 		DCACCB26297C2E1100DBA171 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -145,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				DC8FA524298C55E6001795AB /* TaskModelStorage.swift */,
+				DC04F3CC298DB194004E9E70 /* TaskListModel+Utils.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -153,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				DC8FA522298C4F4A001795AB /* TaskView.swift */,
+				DC8FA526298DA6C1001795AB /* TaskListView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -287,6 +293,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC04F3CD298DB194004E9E70 /* TaskListModel+Utils.swift in Sources */,
+				DC8FA527298DA6C1001795AB /* TaskListView.swift in Sources */,
 				DCACCB25297C2E1100DBA171 /* TinyTasksApp.swift in Sources */,
 				DC8FA525298C55E6001795AB /* TaskModelStorage.swift in Sources */,
 				DCACCB27297C2E1100DBA171 /* Persistence.swift in Sources */,
