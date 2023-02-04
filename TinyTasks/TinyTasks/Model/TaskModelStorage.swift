@@ -49,25 +49,39 @@ final class TaskModelStorage: ObservableObject {
         saveContext()
     }
     
-    func addTaskList() {
+    func addTaskList(number: Int) {
         // FIXME: add error handling
         guard let newTask = createTaskList() else { return }
         newTask.title = "New list"
         newTask.lastChanged = Date()
+        newTask.order = Int16(number)
         saveContext()
     }
     
     func deleteTasks(_ tasks: [TaskModel]) {
         tasks.forEach(delete)
+        // update task order
         saveContext()
     }
     
     func deleteTaskLists(_ taskLists: [TaskListModel]) {
         taskLists.forEach(delete)
+        // update task list order
         saveContext()
     }
     
     func moveTasks(_ orderedTasks: [TaskModel], from source: IndexSet, to destination: Int) {
+        var tasks = orderedTasks
+        tasks.move(fromOffsets: source, toOffset: destination)
+
+        // This is done in reverse order to minimize changes to the indices.
+        for reverseIndex in stride(from: tasks.count - 1, through: 0, by: -1) {
+            tasks[reverseIndex].order = Int16(reverseIndex)
+        }
+        saveContext()
+    }
+    
+    func moveTasksList(_ orderedTasks: [TaskListModel], from source: IndexSet, to destination: Int) {
         var tasks = orderedTasks
         tasks.move(fromOffsets: source, toOffset: destination)
 

@@ -12,7 +12,10 @@ struct ContentView: View {
     @EnvironmentObject var taskModelStorage: TaskModelStorage
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(key: "lastChanged", ascending: false)],
+        sortDescriptors: [
+            NSSortDescriptor(key: "order", ascending: true),
+            NSSortDescriptor(key: "lastChanged", ascending: false)
+        ],
         animation: .default
     )
     private var taskLists: FetchedResults<TaskListModel>
@@ -23,6 +26,7 @@ struct ContentView: View {
                 ForEach(taskLists) { taskList in
                     NavigationLink(taskList.wrappedTitle, value: taskList)
                 }
+                .onMove(perform: moveTaskLists)
                 .onDelete(perform: deleteTaskLists)
             }
             .navigationDestination(for: TaskListModel.self) { taskList in
@@ -46,7 +50,7 @@ struct ContentView: View {
     
     private func addTaskList() {
         withAnimation {
-            taskModelStorage.addTaskList()
+            taskModelStorage.addTaskList(number: taskLists.count)
         }
     }
 
@@ -54,6 +58,11 @@ struct ContentView: View {
         withAnimation {
             taskModelStorage.deleteTaskLists(offsets.map { taskLists[$0] })
         }
+    }
+    
+    private func moveTaskLists(from source: IndexSet, to destination: Int) {
+        let orderedLists: [TaskListModel] = taskLists.map { $0 }
+        taskModelStorage.moveTasksList(orderedLists, from: source, to: destination)
     }
 }
 
