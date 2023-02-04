@@ -42,7 +42,7 @@ struct TaskView: View {
     
     var textView: some View {
         VStack(alignment: .leading) {
-            TextField("Description", text: $viewModel.text)
+            TextField("Description", text: $viewModel.text, axis: .vertical)
                 .onReceive(viewModel.$text.debounce(for: 0.5, scheduler: RunLoop.main)) { text in
                 task.text = text
                 taskModelStorage.saveContext()

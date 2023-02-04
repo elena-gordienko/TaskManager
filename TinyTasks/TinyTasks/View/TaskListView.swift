@@ -35,7 +35,7 @@ struct TaskListView: View {
     var body: some View {
         List {
             Section {
-                TextField("Task List Name", text: $viewModel.title)
+                TextField("Task List Name", text: $viewModel.title, axis: .vertical)
                     .onReceive(viewModel.$title.debounce(for: 0.5, scheduler: RunLoop.main)) { title in
                         tasksList.title = title
                         tasksList.lastChanged = Date()
