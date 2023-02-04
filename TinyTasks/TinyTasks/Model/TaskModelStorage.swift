@@ -45,6 +45,7 @@ final class TaskModelStorage: ObservableObject {
         newTask.text = ""
         newTask.isDone = false
         newTask.list = list
+        newTask.order = list.children.map { Int16($0.count) } ?? 0
         saveContext()
     }
     

@@ -27,7 +27,7 @@ struct TaskListView: View {
         )
         _tasks = FetchRequest(
             entity: TaskModel.entity(),
-            sortDescriptors: [],
+            sortDescriptors: [NSSortDescriptor(key: "order", ascending: true)],
             predicate: NSPredicate(format: "list == %@", receivedTaskList)
         )
     }
@@ -47,6 +47,7 @@ struct TaskListView: View {
                 ForEach(tasks) { task in
                     TaskView(task)
                 }
+                .onMove(perform: move)
                 .onDelete(perform: deleteTasks)
             }
         }
@@ -64,17 +65,28 @@ struct TaskListView: View {
         }
     }
                          
-     private func addTask() {
-         withAnimation {
-             taskModelStorage.addTask(for: tasksList)
-         }
-     }
+    private func addTask() {
+        withAnimation {
+            taskModelStorage.addTask(for: tasksList)
+        }
+    }
 
-     private func deleteTasks(offsets: IndexSet) {
-         withAnimation {
-             taskModelStorage.deleteTasks(offsets.map { tasks[$0] })
-         }
-     }
+    private func deleteTasks(offsets: IndexSet) {
+        withAnimation {
+            taskModelStorage.deleteTasks(offsets.map { tasks[$0] })
+        }
+    }
+    
+    private func move(from source: IndexSet, to destination: Int) {
+        var orderedTasks: [TaskModel] = tasks.map { $0 }
+        orderedTasks.move(fromOffsets: source, toOffset: destination )
+
+        // This is done in reverse order to minimize changes to the indices.
+        for reverseIndex in stride(from: orderedTasks.count - 1, through: 0, by: -1) {
+            orderedTasks[reverseIndex].order = Int16(reverseIndex)
+        }
+        taskModelStorage.saveContext()
+    }
 }
 
 extension TaskListView {
