@@ -11,9 +11,11 @@ import CoreData
 struct ContentView: View {
     @EnvironmentObject var taskModelStorage: TaskModelStorage
     
+    @State private var selected: TaskListModel?
+    
     @FetchRequest(
         sortDescriptors: [
-            NSSortDescriptor(key: "order", ascending: true),
+            NSSortDescriptor(key: "order", ascending: false),
             NSSortDescriptor(key: "lastChanged", ascending: false)
         ],
         animation: .default
@@ -22,38 +24,38 @@ struct ContentView: View {
     
     var storage: any TaskListStorage { taskModelStorage }
     
-    @ViewBuilder
-    var taskListsView: some View {
-        if taskLists.isEmpty {
-            Text("Add task list by clicking +")
-        } else {
-            list
-        }
-    }
-    
-    var list: some View {
-        List {
-            ForEach(taskLists) { taskList in
-                NavigationLink(taskList.wrappedTitle, value: taskList)
-            }
-            .onMove(perform: moveTaskLists)
-            .onDelete(perform: deleteTaskLists)
-        }
-    }
-    
     var body: some View {
-        NavigationStack {
-            taskListsView.navigationDestination(for: TaskListModel.self) { taskList in
-                TaskListView(taskList)
+        #if os(macOS)
+        macOSView.frame(minWidth: 600, minHeight: 400)
+        #else
+        iOSView
+        #endif
+    }
+    
+    var macOSView: some View {
+        NavigationView {
+            taskListsView
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button(action: toggleSidebar, label: {
+                    Image(systemName: "sidebar.leading")
+                })
             }
+        }
+    }
+    
+    var iOSView: some View {
+        NavigationStack {
+            taskListsView
             .navigationTitle("Task Lists")
             .toolbar {
-#if os(iOS)
+                #if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-#endif
-                ToolbarItem {
+                #endif
+                ToolbarItem() {
                     Button(action: addTaskList) {
                         Label("Add Task List", systemImage: "plus")
                     }
@@ -61,12 +63,79 @@ struct ContentView: View {
             }
         }
     }
+    
+    var controlButtons: some View {
+        HStack {
+            Button(action: addTaskList) {
+                Label("Add", systemImage: "plus")
+            }
+            Button(action: {
+                if let selection = selected {
+                    withAnimation {
+                        storage.deleteTaskLists([selection])
+                        selected = nil
+                    }
+                }
+            }, label: {
+                Label("Delete", systemImage: "trash")
+            })
+            .disabled($selected.wrappedValue == nil)
+        }.padding()
+    }
+    
+    var taskListsView: some View {
+        VStack {
+            if taskLists.isEmpty {
+                Text("Add task list by clicking +").padding()
+            } else {
+                List(selection: $selected) {
+                    ForEach(taskLists) { taskList in
+                        NavigationLink(taskList.wrappedTitle) {
+                            TaskListView(taskList)
+                        }
+                        .swipeActions {
+                            Button("Delete", role: .destructive) {
+                                deleteTaskList(taskList)
+                            }
+                        }
+                    }
+                    .onMove(perform: moveTaskLists)
+                    .onDelete(perform: deleteTaskLists)
+                }
+                
+                #if os(macOS)
+                .listStyle(.sidebar)
+                .frame(minWidth: 160)
+                #endif
+            }
+            Spacer()
+            #if os(macOS)
+            controlButtons
+            #endif
+        }
+    }
 }
 
 extension ContentView {
+    private func toggleSidebar() {
+        #if os(iOS)
+        #else
+        NSApp
+            .keyWindow?
+            .firstResponder?
+            .tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
+        #endif
+    }
+    
     private func addTaskList() {
         withAnimation {
             storage.addTaskList(number: taskLists.count)
+        }
+    }
+    
+    private func deleteTaskList(_ taskList: TaskListModel) {
+        withAnimation {
+            storage.deleteTaskLists([taskList])
         }
     }
 
