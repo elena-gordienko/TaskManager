@@ -107,10 +107,10 @@
 		DCACCB23297C2E1100DBA171 /* TinyTasks */ = {
 			isa = PBXGroup;
 			children = (
+				DCEE4B5A298EC749001FF09C /* Storage */,
 				DCFA4815298C4002005F7D50 /* Model */,
 				DCFA481A298C444A005F7D50 /* View */,
 				DCACCB24297C2E1100DBA171 /* TinyTasksApp.swift */,
-				DCACCB26297C2E1100DBA171 /* Persistence.swift */,
 				DCACCB2B297C2E1100DBA171 /* ContentView.swift */,
 				DCACCB2D297C2E1200DBA171 /* Assets.xcassets */,
 				DCACCB2F297C2E1200DBA171 /* TinyTasks.entitlements */,
@@ -143,6 +143,14 @@
 				DCACCB47297C2E1300DBA171 /* TinyTasksUITestsLaunchTests.swift */,
 			);
 			path = TinyTasksUITests;
+			sourceTree = "<group>";
+		};
+		DCEE4B5A298EC749001FF09C /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				DCACCB26297C2E1100DBA171 /* Persistence.swift */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		DCFA4815298C4002005F7D50 /* Model */ = {

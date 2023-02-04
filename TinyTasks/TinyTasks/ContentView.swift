@@ -84,6 +84,9 @@ extension ContentView {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        let viewContext = PersistenceController.preview.container.viewContext
+        return ContentView()
+            .environment(\.managedObjectContext, viewContext)
+            .environmentObject(TaskModelStorage(viewContext: viewContext))
     }
 }
