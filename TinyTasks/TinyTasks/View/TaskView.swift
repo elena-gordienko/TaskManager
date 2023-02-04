@@ -33,7 +33,7 @@ struct TaskView: View {
         .onTapGesture {
             viewModel.isDone.toggle()
         }.onReceive(
-            viewModel.$isDone.debounce(for: 0.5, scheduler: RunLoop.main)
+            viewModel.$isDone.debounce(for: 0.3, scheduler: RunLoop.main)
         ) { isDone in
             task.isDone = isDone
             taskModelStorage.saveContext()
@@ -43,7 +43,7 @@ struct TaskView: View {
     var textView: some View {
         VStack(alignment: .leading) {
             TextField("Description", text: $viewModel.text, axis: .vertical)
-                .onReceive(viewModel.$text.debounce(for: 0.5, scheduler: RunLoop.main)) { text in
+                .onReceive(viewModel.$text.debounce(for: 0.3, scheduler: RunLoop.main)) { text in
                 task.text = text
                 taskModelStorage.saveContext()
             }

@@ -25,6 +25,8 @@ struct TinyTasksApp: App {
                      persistenceController.container.viewContext
                 )
                 .environmentObject(taskModelStorage)
+        }.commands {
+            SidebarCommands()
         }
     }
 }
