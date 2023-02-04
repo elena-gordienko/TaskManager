@@ -17,6 +17,8 @@ struct TaskListView: View {
     
     @FetchRequest var tasks: FetchedResults<TaskModel>
     
+    var storage: any TaskStorage { taskModelStorage }
+    
     init(_ receivedTaskList: TaskListModel) {
         _tasksList = .init(initialValue: receivedTaskList)
         _viewModel = .init(
@@ -39,7 +41,7 @@ struct TaskListView: View {
                     .onReceive(viewModel.$title.debounce(for: 0.5, scheduler: RunLoop.main)) { title in
                         tasksList.title = title
                         tasksList.lastChanged = Date()
-                        taskModelStorage.saveContext()
+                        storage.saveContext()
                     }
                     .font(.largeTitle)
             }
@@ -67,19 +69,19 @@ struct TaskListView: View {
                          
     private func addTask() {
         withAnimation {
-            taskModelStorage.addTask(for: tasksList)
+            storage.addTask(for: tasksList)
         }
     }
 
     private func deleteTasks(offsets: IndexSet) {
         withAnimation {
-            taskModelStorage.deleteTasks(offsets.map { tasks[$0] })
+            storage.deleteTasks(offsets.map { tasks[$0] })
         }
     }
     
     private func moveTasks(from source: IndexSet, to destination: Int) {
         let orderedTasks: [TaskModel] = tasks.map { $0 }
-        taskModelStorage.moveTasks(orderedTasks, from: source, to: destination)
+        storage.moveTasks(orderedTasks, from: source, to: destination)
     }
 }
 

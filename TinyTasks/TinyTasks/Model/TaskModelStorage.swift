@@ -9,23 +9,55 @@ import CoreData
 import Foundation
 import SwiftUI
 
-final class TaskModelStorage: ObservableObject {
+protocol OrderedManagedObject: AnyObject {
+    var order: Int16 { get set }
+}
+
+protocol ModelStorage: ObservableObject {
+    func saveContext()
+}
+
+protocol TaskStorage: ModelStorage {
+    func addTask(for list: TaskListModel)
+    func deleteTasks(_ tasks: [TaskModel])
+    func moveTasks(_ orderedTasks: [TaskModel], from source: IndexSet, to destination: Int)
+    func updateOrder(for tasks: [TaskModel])
+}
+
+protocol TaskListStorage: ModelStorage {
+    func addTaskList(number: Int)
+    func deleteTaskLists(_ taskLists: [TaskListModel])
+    func moveTasksList(_ orderedTasks: [TaskListModel], from source: IndexSet, to destination: Int)
+    func updateOrder(for taskLists: [TaskListModel])
+}
+
+final class TaskModelStorage: ModelStorage {
     private weak var viewContext: NSManagedObjectContext?
     
     init(viewContext: NSManagedObjectContext?) {
         self.viewContext = viewContext
     }
     
-    private func createTask() -> TaskModel? {
-        viewContext.map { TaskModel(context: $0) }
-    }
-    
-    private func createTaskList() -> TaskListModel? {
-        viewContext.map { TaskListModel(context: $0) }
-    }
-    
     private func delete(_ object: NSManagedObject) {
         viewContext?.delete(object)
+    }
+    
+    private func updateOrder<Object: NSManagedObject & OrderedManagedObject>(_ objects: [Object]) {
+        // This is done in reverse order to minimize changes to the indices.
+        for reverseIndex in stride(from: objects.count - 1, through: 0, by: -1) {
+            objects[reverseIndex].order = Int16(reverseIndex)
+        }
+    }
+    
+    private func move<Object: NSManagedObject & OrderedManagedObject>(
+        _ objects: [Object],
+        from source: IndexSet,
+        to destination: Int
+    ) {
+        var orderedObjects = objects
+        orderedObjects.move(fromOffsets: source, toOffset: destination)
+        updateOrder(orderedObjects)
+        saveContext()
     }
     
     func saveContext() {
@@ -38,6 +70,12 @@ final class TaskModelStorage: ObservableObject {
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
+}
+
+extension TaskModelStorage: TaskStorage {
+    private func createTask() -> TaskModel? {
+        viewContext.map { TaskModel(context: $0) }
+    }
     
     func addTask(for list: TaskListModel) {
         // FIXME: add error handling
@@ -49,6 +87,26 @@ final class TaskModelStorage: ObservableObject {
         saveContext()
     }
     
+    func deleteTasks(_ tasks: [TaskModel]) {
+        tasks.forEach(delete)
+        saveContext()
+    }
+    
+    func moveTasks(_ orderedTasks: [TaskModel], from source: IndexSet, to destination: Int) {
+        move(orderedTasks, from: source, to: destination)
+    }
+    
+    func updateOrder(for tasks: [TaskModel]) {
+        updateOrder(tasks)
+        saveContext()
+    }
+}
+
+extension TaskModelStorage: TaskListStorage {
+    private func createTaskList() -> TaskListModel? {
+        viewContext.map { TaskListModel(context: $0) }
+    }
+    
     func addTaskList(number: Int) {
         // FIXME: add error handling
         guard let newTask = createTaskList() else { return }
@@ -58,37 +116,18 @@ final class TaskModelStorage: ObservableObject {
         saveContext()
     }
     
-    func deleteTasks(_ tasks: [TaskModel]) {
-        tasks.forEach(delete)
-        // update task order
+    func updateOrder(for taskLists: [TaskListModel]) {
+        updateOrder(taskLists)
         saveContext()
     }
+    
     
     func deleteTaskLists(_ taskLists: [TaskListModel]) {
         taskLists.forEach(delete)
-        // update task list order
-        saveContext()
-    }
-    
-    func moveTasks(_ orderedTasks: [TaskModel], from source: IndexSet, to destination: Int) {
-        var tasks = orderedTasks
-        tasks.move(fromOffsets: source, toOffset: destination)
-
-        // This is done in reverse order to minimize changes to the indices.
-        for reverseIndex in stride(from: tasks.count - 1, through: 0, by: -1) {
-            tasks[reverseIndex].order = Int16(reverseIndex)
-        }
         saveContext()
     }
     
     func moveTasksList(_ orderedTasks: [TaskListModel], from source: IndexSet, to destination: Int) {
-        var tasks = orderedTasks
-        tasks.move(fromOffsets: source, toOffset: destination)
-
-        // This is done in reverse order to minimize changes to the indices.
-        for reverseIndex in stride(from: tasks.count - 1, through: 0, by: -1) {
-            tasks[reverseIndex].order = Int16(reverseIndex)
-        }
-        saveContext()
+        move(orderedTasks, from: source, to: destination)
     }
 }

@@ -12,3 +12,6 @@ extension TaskListModel {
         title ?? "Untitled"
     }
 }
+
+extension TaskModel: OrderedManagedObject { }
+extension TaskListModel: OrderedManagedObject { }

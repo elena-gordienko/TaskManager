@@ -20,6 +20,8 @@ struct ContentView: View {
     )
     private var taskLists: FetchedResults<TaskListModel>
     
+    var storage: any TaskListStorage { taskModelStorage }
+    
     var body: some View {
         NavigationStack {
             List {
@@ -50,19 +52,19 @@ struct ContentView: View {
     
     private func addTaskList() {
         withAnimation {
-            taskModelStorage.addTaskList(number: taskLists.count)
+            storage.addTaskList(number: taskLists.count)
         }
     }
 
     private func deleteTaskLists(offsets: IndexSet) {
         withAnimation {
-            taskModelStorage.deleteTaskLists(offsets.map { taskLists[$0] })
+            storage.deleteTaskLists(offsets.map { taskLists[$0] })
         }
     }
     
     private func moveTaskLists(from source: IndexSet, to destination: Int) {
         let orderedLists: [TaskListModel] = taskLists.map { $0 }
-        taskModelStorage.moveTasksList(orderedLists, from: source, to: destination)
+        storage.moveTasksList(orderedLists, from: source, to: destination)
     }
 }
 
