@@ -47,7 +47,7 @@ struct TaskListView: View {
                 ForEach(tasks) { task in
                     TaskView(task)
                 }
-                .onMove(perform: move)
+                .onMove(perform: moveTasks)
                 .onDelete(perform: deleteTasks)
             }
         }
@@ -77,15 +77,9 @@ struct TaskListView: View {
         }
     }
     
-    private func move(from source: IndexSet, to destination: Int) {
-        var orderedTasks: [TaskModel] = tasks.map { $0 }
-        orderedTasks.move(fromOffsets: source, toOffset: destination )
-
-        // This is done in reverse order to minimize changes to the indices.
-        for reverseIndex in stride(from: orderedTasks.count - 1, through: 0, by: -1) {
-            orderedTasks[reverseIndex].order = Int16(reverseIndex)
-        }
-        taskModelStorage.saveContext()
+    private func moveTasks(from source: IndexSet, to destination: Int) {
+        let orderedTasks: [TaskModel] = tasks.map { $0 }
+        taskModelStorage.moveTasks(orderedTasks, from: source, to: destination)
     }
 }
 

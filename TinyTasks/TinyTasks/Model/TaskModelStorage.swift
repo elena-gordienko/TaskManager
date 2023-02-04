@@ -66,4 +66,15 @@ final class TaskModelStorage: ObservableObject {
         taskLists.forEach(delete)
         saveContext()
     }
+    
+    func moveTasks(_ orderedTasks: [TaskModel], from source: IndexSet, to destination: Int) {
+        var tasks = orderedTasks
+        tasks.move(fromOffsets: source, toOffset: destination)
+
+        // This is done in reverse order to minimize changes to the indices.
+        for reverseIndex in stride(from: tasks.count - 1, through: 0, by: -1) {
+            tasks[reverseIndex].order = Int16(reverseIndex)
+        }
+        saveContext()
+    }
 }
