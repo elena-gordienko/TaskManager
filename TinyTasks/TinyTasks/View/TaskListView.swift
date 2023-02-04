@@ -34,23 +34,36 @@ struct TaskListView: View {
         )
     }
     
+    @ViewBuilder
+    var tasksView: some View {
+        if tasks.isEmpty {
+            Text("Add task by clicking +")
+        } else {
+            ForEach(tasks) { task in
+                TaskView(task)
+            }
+            .onMove(perform: moveTasks)
+            .onDelete(perform: deleteTasks)
+        }
+    }
+    
+    var taskListTitle: some View {
+        TextField("Task List Name", text: $viewModel.title, axis: .vertical)
+            .onReceive(viewModel.$title.debounce(for: 0.5, scheduler: RunLoop.main)) { title in
+                tasksList.title = title
+                tasksList.lastChanged = Date()
+                storage.saveContext()
+            }
+            .font(.largeTitle)
+    }
+    
     var body: some View {
         List {
             Section {
-                TextField("Task List Name", text: $viewModel.title, axis: .vertical)
-                    .onReceive(viewModel.$title.debounce(for: 0.5, scheduler: RunLoop.main)) { title in
-                        tasksList.title = title
-                        tasksList.lastChanged = Date()
-                        storage.saveContext()
-                    }
-                    .font(.largeTitle)
+                taskListTitle
             }
             Section {
-                ForEach(tasks) { task in
-                    TaskView(task)
-                }
-                .onMove(perform: moveTasks)
-                .onDelete(perform: deleteTasks)
+                tasksView
             }
         }
         .toolbar {
@@ -66,7 +79,9 @@ struct TaskListView: View {
             }
         }
     }
-                         
+}
+
+extension TaskListView {
     private func addTask() {
         withAnimation {
             storage.addTask(for: tasksList)

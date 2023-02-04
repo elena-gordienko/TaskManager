@@ -22,16 +22,28 @@ struct ContentView: View {
     
     var storage: any TaskListStorage { taskModelStorage }
     
+    @ViewBuilder
+    var taskListsView: some View {
+        if taskLists.isEmpty {
+            Text("Add task list by clicking +")
+        } else {
+            list
+        }
+    }
+    
+    var list: some View {
+        List {
+            ForEach(taskLists) { taskList in
+                NavigationLink(taskList.wrappedTitle, value: taskList)
+            }
+            .onMove(perform: moveTaskLists)
+            .onDelete(perform: deleteTaskLists)
+        }
+    }
+    
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(taskLists) { taskList in
-                    NavigationLink(taskList.wrappedTitle, value: taskList)
-                }
-                .onMove(perform: moveTaskLists)
-                .onDelete(perform: deleteTaskLists)
-            }
-            .navigationDestination(for: TaskListModel.self) { taskList in
+            taskListsView.navigationDestination(for: TaskListModel.self) { taskList in
                 TaskListView(taskList)
             }
             .navigationTitle("Task Lists")
@@ -49,7 +61,9 @@ struct ContentView: View {
             }
         }
     }
-    
+}
+
+extension ContentView {
     private func addTaskList() {
         withAnimation {
             storage.addTaskList(number: taskLists.count)
