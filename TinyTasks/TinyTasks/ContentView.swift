@@ -24,13 +24,6 @@ struct ContentView: View {
     
     var body: some View {
         #if os(macOS)
-        macOSView.frame(minWidth: 600, minHeight: 400)
-        #else
-        iOSView
-        #endif
-    }
-    
-    var macOSView: some View {
         NavigationView {
             taskListsView
         }
@@ -41,18 +34,15 @@ struct ContentView: View {
                 })
             }
         }
-    }
-    
-    var iOSView: some View {
+        .frame(minWidth: 600, minHeight: 400)
+        #else
         NavigationStack {
             taskListsView
             .navigationTitle("Task Lists")
             .toolbar {
-                #if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-                #endif
                 ToolbarItem() {
                     Button(action: addTaskList) {
                         Label("Add Task List", systemImage: "plus")
@@ -60,6 +50,7 @@ struct ContentView: View {
                 }
             }
         }
+        #endif
     }
     
     var controlButtons: some View {
