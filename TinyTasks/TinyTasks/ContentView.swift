@@ -90,9 +90,12 @@ struct ContentView: View {
             } else {
                 List(selection: $selected) {
                     ForEach(taskLists) { taskList in
-                        NavigationLink(taskList.wrappedTitle) {
-                            TaskListView(taskList)
+                        // this is a deprecated method, but selection doesn't work for `NavigationLink(value:label:)`
+                        NavigationLink(destination: TaskListView(taskList), tag: taskList, selection: $selected) {
+                            Text(taskList.wrappedTitle)
+                                .multilineTextAlignment(.leading)
                         }
+                        .tag(taskList.id)
                         .swipeActions {
                             Button("Delete", role: .destructive) {
                                 deleteTaskList(taskList)
