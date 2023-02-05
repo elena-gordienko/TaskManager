@@ -28,9 +28,12 @@ struct TaskView: View {
     
     var checkBox: some View {
         Image(
-            systemName: viewModel.isDone ? "checkmark.square.fill" : "square"
+            systemName: viewModel.isDone ? "checkmark.circle.fill" : "circle"
         )
-        .foregroundColor(viewModel.isDone ? .green : .secondary)
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+        .frame(maxWidth: 20, maxHeight: 20, alignment: .center)
+        .foregroundColor(viewModel.isDone ? .accentColor : .secondary)
         .onTapGesture {
             viewModel.isDone.toggle()
         }.onReceive(
@@ -45,9 +48,10 @@ struct TaskView: View {
         VStack(alignment: .leading) {
             TextField("Description", text: $viewModel.text, axis: .vertical)
                 .onReceive(viewModel.$text.debounce(for: 0.3, scheduler: RunLoop.main)) { text in
-                task.text = text
-                storage.saveContext()
-            }
+                    task.text = text
+                    storage.saveContext()
+                }
+                .padding(.vertical)
         }
     }
     
