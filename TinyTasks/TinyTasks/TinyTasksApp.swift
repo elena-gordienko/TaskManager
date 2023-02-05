@@ -19,12 +19,11 @@ struct TinyTasksApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(storage: taskModelStorage)
                 .environment(
                     \.managedObjectContext,
                      persistenceController.container.viewContext
                 )
-                .environmentObject(taskModelStorage)
         }.commands {
             SidebarCommands()
         }

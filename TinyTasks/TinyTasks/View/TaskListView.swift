@@ -9,17 +9,15 @@ import Foundation
 import SwiftUI
 
 struct TaskListView: View {
-    @EnvironmentObject var taskModelStorage: TaskModelStorage
-    
     @StateObject var viewModel: ViewModel
     
     @State var tasksList: TaskListModel
     
     @FetchRequest var tasks: FetchedResults<TaskModel>
     
-    var storage: any TaskStorage { taskModelStorage }
+    let storage: any TaskStorage
     
-    init(_ receivedTaskList: TaskListModel) {
+    init(_ receivedTaskList: TaskListModel, storage: any TaskStorage) {
         _tasksList = .init(initialValue: receivedTaskList)
         _viewModel = .init(
             wrappedValue: .init(
@@ -32,6 +30,7 @@ struct TaskListView: View {
             sortDescriptors: [NSSortDescriptor(key: "order", ascending: true)],
             predicate: NSPredicate(format: "list == %@", receivedTaskList)
         )
+        self.storage = storage
     }
     
     @ViewBuilder
@@ -40,7 +39,7 @@ struct TaskListView: View {
             Text("Add task by clicking +")
         } else {
             ForEach(tasks) { task in
-                TaskView(task)
+                TaskView(task, storage: storage)
             }
             .onMove(perform: moveTasks)
             .onDelete(perform: deleteTasks)

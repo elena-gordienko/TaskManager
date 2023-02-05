@@ -9,8 +9,6 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @EnvironmentObject var taskModelStorage: TaskModelStorage
-    
     @State private var selected: TaskListModel?
     
     @FetchRequest(
@@ -22,7 +20,7 @@ struct ContentView: View {
     )
     private var taskLists: FetchedResults<TaskListModel>
     
-    var storage: any TaskListStorage { taskModelStorage }
+    let storage: any TaskStorage & TaskListStorage
     
     var body: some View {
         #if os(macOS)
@@ -91,7 +89,11 @@ struct ContentView: View {
                 List(selection: $selected) {
                     ForEach(taskLists) { taskList in
                         // this is a deprecated method, but selection doesn't work for `NavigationLink(value:label:)`
-                        NavigationLink(destination: TaskListView(taskList), tag: taskList, selection: $selected) {
+                        NavigationLink(
+                            destination: TaskListView(taskList, storage: storage),
+                            tag: taskList,
+                            selection: $selected
+                        ) {
                             Text(taskList.wrappedTitle)
                                 .multilineTextAlignment(.leading)
                         }
@@ -157,8 +159,7 @@ extension ContentView {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let viewContext = PersistenceController.preview.container.viewContext
-        return ContentView()
+        return ContentView(storage: TaskModelStorage(viewContext: viewContext))
             .environment(\.managedObjectContext, viewContext)
-            .environmentObject(TaskModelStorage(viewContext: viewContext))
     }
 }

@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 
 struct TaskView: View {
-    @EnvironmentObject var taskModelStorage: TaskModelStorage
-    
     @StateObject var viewModel: ViewModel
     
     @State var task: TaskModel
     
-    init(_ receivedTask: TaskModel) {
+    let storage: any TaskStorage
+    
+    init(_ receivedTask: TaskModel, storage: any TaskStorage) {
         _task = .init(initialValue: receivedTask)
         _viewModel = .init(
             wrappedValue: .init(
@@ -23,6 +23,7 @@ struct TaskView: View {
                 isDone: receivedTask.isDone
             )
         )
+        self.storage = storage
     }
     
     var checkBox: some View {
@@ -36,7 +37,7 @@ struct TaskView: View {
             viewModel.$isDone.debounce(for: 0.3, scheduler: RunLoop.main)
         ) { isDone in
             task.isDone = isDone
-            taskModelStorage.saveContext()
+            storage.saveContext()
         }
     }
     
@@ -45,7 +46,7 @@ struct TaskView: View {
             TextField("Description", text: $viewModel.text, axis: .vertical)
                 .onReceive(viewModel.$text.debounce(for: 0.3, scheduler: RunLoop.main)) { text in
                 task.text = text
-                taskModelStorage.saveContext()
+                storage.saveContext()
             }
         }
     }
